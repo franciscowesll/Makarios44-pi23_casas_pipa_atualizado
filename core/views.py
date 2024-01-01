@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Casa
 from .forms import CasaForm
@@ -13,13 +14,15 @@ from django.shortcuts import render, redirect, HttpResponse
 # Create your views here.
 
 def home(request):
-    casas = Casa.objects.all()
-    contexto = { 
-        'todas_casas': casas  
+    
 
+    casas = Casa.objects.all()
+    
+    context = { 
+        'todas_casas': casas,
     }
 
-    return render (request, "index.html", contexto)
+    return render (request, "index.html", context=context)
 
 
 
@@ -69,13 +72,15 @@ def cadastro(request):
         if user_type == 'owner':
             user_permissions = ['cadastrar_casas', 'excluir_casas', 'editar_casas']
         elif user_type == 'renter':
-            user_permissions = ['fazer_reservas', 'cancelar_reservas']
+            user_permissions = ['cadastrar_casas', 'fazer_reservas', 'cancelar_reservas']
 
         # Aqui você deve aplicar as permissões ao usuário
         for permission in user_permissions:
             user.has_perm(permission)  # Isso cria a permissão no banco de dados para o usuário
 
         return HttpResponse('Usuário cadastrado com sucesso')
+
+
 
 
 def booking(request):
@@ -86,16 +91,34 @@ def booking(request):
 @has_role_decorator('proprietario')
 # Exemplo de como salvar uma casa no seu formulário de criação
 def formcad(request):
-    form = CasaForm(request.POST)
-    if form.is_valid():
-        casa = form.save(commit=False)
-        casa.owner = request.user  # Define o proprietário como o usuário autenticado
-        casa.save()
-        return redirect('perfil')
-    contexto = {
-        'form_casa': form
-    }
-    return render(request, "formcad.html", contexto)
+   form = CasaForm()
+   if(request.method == 'POST'): 
+       
+        form = CasaForm(request.POST, request.FILES)
+        
+        if (form.is_valid()):
+            nome = form.cleaned_data['nome']
+            qq = form.cleaned_data['quantidade_quartos']
+            pp = form.cleaned_data['possui_piscina']
+            ic = form.cleaned_data['introducao_casa']
+            fotos = form.files["fotos"]
+            preco = form.cleaned_data['preco']
+            owner = request.user.id
+     
+            Casa.objects.create(nome=nome, quantidade_quartos=qq, possui_piscina = pp, introducao_casa = ic, fotos=fotos, preco=preco, owner_id=owner)
+           
+            return redirect('home')
+        else:
+            
+            return HttpResponse(form.cleaned_data['nome'])
+
+
+   elif(request.method == 'GET'):
+        context = {
+             'form': form,
+         }
+
+        return render(request, "formcad.html", context=context)
 
 @login_required
 @has_role_decorator('proprietario')

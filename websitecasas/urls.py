@@ -33,10 +33,10 @@ urlpatterns = [
     path('editar_casas/<int:id>', editar_casas, name="editar_casas"),
     path('casa_remover/<int:id>',remover_casa, name = "remover_casa"),
     path('cadastro/', views.cadastro, name="cadastro" ),
-
     path("logout/", LogoutView.as_view(), name="logout"),
+    
  
 
-]
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 #urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

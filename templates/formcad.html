@@ -12,9 +12,11 @@
         <h1>Detalhamento do tipo da casa</h1>
     </div>
     <div class="formulario">
-        <form method="post" enctype="multipart/form-data">  
+        <form id ="form" method="POST" enctype="multipart/form-data" action="{% url 'formcad' %}" >
+            <!--*enctype="multipart/form-data"-->  
             {% csrf_token %}
 
+        
             {% if form.errors %}
             <div class="alert alert-danger">
                 {{ form.errors }}
@@ -49,10 +51,19 @@
                 <input type="text" id="id_preco" name="preco">
                 
                 <!-- Botão de Envio -->
+                
                 <input type="submit" value="Cadastrar Casa">
             </div>
         </form>
     </div>
+    <section>
+
+    
+        
+    </section>
+    <script>
+       
+    </script>
 </body>
 </html>
   

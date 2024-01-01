@@ -13,7 +13,9 @@ class Casa(models.Model):
     preco = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)  
 
+ 
+
     def __str__(self):
-        return self.nome
+        return f'{self.nome} {self.quantidade_quartos} {self.fotos} {self.possui_piscina} {self.introducao_casa} {self.preco}'
     
 
